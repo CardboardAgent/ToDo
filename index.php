@@ -32,10 +32,10 @@ if (array_key_exists('do', $_GET)){
     $do = null;
 }
 // session_destroy gets called allthough the cookie logedin isset:
-//if (!isset($_COOKIE['logedin'])){
-//    session_unset();
-//    session_destroy();
-//}
+if (array_key_exists('logedin', $_COOKIE)){
+    session_unset();
+    session_destroy();
+}
 
 switch ($section){
     case 'register':
@@ -50,7 +50,7 @@ switch ($section){
         $template->render();
         
         if ($do == 'createUser') {
-            $user->createUser($database);
+            $user->createUser();
             $msg = $user->getErrorMsg();
         }
         
@@ -80,17 +80,17 @@ switch ($section){
     case 'logout':
         //session_unset();
         //session_destroy();
-        if (isset($_COOKIE['logedin'])){
+        if (array_key_exists('logedin', $_COOKIE)){
             unset($_COOKIE['logedin']);
-            setcookie('logedin', 'true', -1);
+            setcookie('logedin', 'true', 1);
         }
         header("Location: index.php?section=login");
         break;
         
     case 'login':
     default : // login
-        if (isset($_COOKIE['logedin'])){
-            //header("Location: index.php?section=logedin"); // authentication already done, further to logedin
+        if (array_key_exists('logedin', $_COOKIE)){
+            header("Location: index.php?section=logedin"); // authentication already done, further to logedin
         }
         // content-template:
         $templateContent = file_get_contents('./todo/templates/login.html');
@@ -103,20 +103,19 @@ switch ($section){
         $template->render();
         
         if ($do == 'login'){
-            $user->checkUser($database);
-        }
-        
-        if ($user->getArrResult()){
-            setcookie('logedin', 'true', (time()+1800)); // set cookie I use to delete the session once 30 Minutes passed..
-            session_start(); // start the Session
-            $_SESSION['userid'] = $user->getUserId($database); // get the UserId and store it in the Session
-            var_dump($_SESSION);
-            //header("Location: index.php?section=logedin"); // send to section logedin
-        } else {
-            $template->replace('[TODO_ERROR]', 'Benutername oder Passwort falsch, bitte &uuml;berpr&uuml;fen Sie die Eingabe');
+            $user->checkUser();
+            if ($user->getArrResult()){
+                setcookie('logedin', 'true', (time()+1800)); // set cookie I use to delete the session once 30 Minutes passed..
+                session_start(); // start the Session
+                $_SESSION['userid'] = $user->getUserId($database); // get the UserId and store it in the Session
+                var_dump($_SESSION);
+                //header("Location: index.php?section=logedin"); // send to section logedin
+            } else {
+                $template->replace('[TODO_ERROR]', 'Benutername oder Passwort falsch, bitte &uuml;berpr&uuml;fen Sie die Eingabe');
+            }
         }
         
         echo $template->renderedTemplate;
         break;
 }
-// $database->exit();
+// $database = null;

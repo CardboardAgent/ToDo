@@ -22,20 +22,27 @@ class User {
         return $this->username;
     }
     
-    public function getUserId($database) {
+    public function getUserId() {
+        global $database;
+        
         $query = 'SELECT `id` 
                   FROM `td_user` 
                   WHERE `username` = "' . $this->username .'";';
         $this->result = $database->execute($query);
         $this->arrResult = mysqli_fetch_array($this->result);
-        return $this->arrResult['id'];
+        
+        $this->id = $this->arrResult['id'];
+        
+        return $this->id;
     }
     
     public function getErrorMsg() {
         return $this->errormsg;
     }
     
-    public function createUser($database) {
+    public function createUser() {
+        global $database;
+        
         $this->username = $_POST['username'];
         $this->passwd = $_POST['password'];
         $this->username = mysqli_escape_string($database->link, $username);
@@ -51,7 +58,9 @@ class User {
         }
     }
     
-    public function checkUser($database) {
+    public function checkUser() {
+        global $database;
+        
         $this->username = $_POST['username'];
         $this->passwd = md5($_POST['passwd']);
         
