@@ -1,0 +1,28 @@
+<form action="./index.php?section=createuser" method="post" id="registration">
+    <p id="errormsg"></p>
+    <label>Benutzername</label>&nbsp;<input id="password" type="text" placeholder="Benutzername" name="username" >&nbsp;
+    <label>Passwort</label>&nbsp;<input type="password" name="password" >
+    <div id="infotext">Passwort sollte mindestens 8 Zeichen lang sein und Sonderzeichen wie $, !, &amp; etc. beinhalten</div>
+    <label>Passwort erneut eingeben</label>&nbsp;<input id="retypePassword" type="password" name="retypePassword" >
+    <input type="submit" value="Registrieren" name="submit" >
+    <input type="reset" value="Zur&uuml;cksetzen" name="reset" >
+</form>
+<script>
+   
+    
+    var checkPasswd = function(){
+        var passwd = document.getElementsByName("password")[0].value;
+        var repasswd = document.getElementsByName("retypePassword")[0].value;
+        
+        if (passwd == repasswd && passwd.length != 0) {
+            document.getElementsByName("submit")[0].disabled = false;
+            document.getElementById("errormsg").innerHTML = '';
+        } else {
+            document.getElementsByName("submit")[0].disabled = true;
+            document.getElementById("errormsg").innerHTML = 'Bitte &uuml;berpr&uuml;fen Sie die Passw&ouml;rter';
+        }
+    }
+    checkPasswd();
+    document.getElementsByName("password")[0].onchange = checkPasswd;
+    document.getElementsByName("retypePassword")[0].onchange = checkPasswd;
+</script>
