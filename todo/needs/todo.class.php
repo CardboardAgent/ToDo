@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * May needs an update as soon as Database gets updated changes and so on..
+ */
 namespace ToDo\Needs;
 
 class Todo {
@@ -16,9 +18,12 @@ class Todo {
     
     protected function listToDo($userId) {
         if (!empty($userId)){
-            $query = "SELECT name, description, category, state FROM td_todo WHERE user = $userId;";
+            $query = "SELECT name, description, category, state 
+                      FROM td_todo 
+                      WHERE user = $userId;";
         }else {
-            $query = "SELECT name, description, category, state, user FROM td_todo;";
+            $query = "SELECT name, description, category, state, user 
+                      FROM td_todo;";
         }
         $result = DatabaseConnection::execute($query);
         
@@ -45,7 +50,9 @@ class Todo {
         $placeholder = '[TODO]';
         $template = '../templates/list-todo.html';
         
-        $query = "SELECT name, description, category, state, user FROM td_todo WHERE id = $id;";
+        $query = "SELECT name, description, category, state, user 
+                  FROM td_todo 
+                  WHERE id = $id;";
         $result = \DatabaseConnection::execute($query);
         if (strpos(file_get_contents($template), $placeholder)){
             $content = '<div class="todo"><h2 class="title">' . $result[0]['name'] . '</h2><div class="clearfix"><div class="category">' . $result[0]['category'] . '</div><div class="state">' . $result[0]['state'] . '</div></div><div class="description">' . $result[0]['description'] . '</div></div>';
@@ -56,7 +63,10 @@ class Todo {
     }
     
     protected function editToDo($id, $category, $state, $user){
-        $query = "SELECT name, description, category, state, user FROM td_todo WHERE id = $id AND user_id = $user;";
+        $query = "SELECT name, description, category, state, user 
+                  FROM td_todo 
+                  WHERE id = $id 
+                      AND user_id = $user;";
         $result = DatabaseConnection::execute($query);
         
         foreach($result as $key => $value){

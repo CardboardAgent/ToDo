@@ -1,11 +1,12 @@
-<form action="./index.php?section=createuser" method="post" id="registration">
+<form action="./index.php?section=register&do=createUser" method="post" id="registration">
     <p id="errormsg"></p>
+    <p class="dberror">[TODO_ERROR]</p>
     <label>Benutzername</label>&nbsp;<input id="password" type="text" placeholder="Benutzername" name="username" >&nbsp;
     <label>Passwort</label>&nbsp;<input type="password" name="password" >
     <div id="infotext">Passwort sollte mindestens 8 Zeichen lang sein und Sonderzeichen wie $, !, &amp; etc. beinhalten</div>
     <label>Passwort erneut eingeben</label>&nbsp;<input id="retypePassword" type="password" name="retypePassword" >
-    <input type="submit" value="Registrieren" name="submit" >
     <input type="reset" value="Zur&uuml;cksetzen" name="reset" >
+    <input type="submit" value="Registrieren" name="submit" >    
 </form>
 <script>
    
@@ -25,4 +26,10 @@
     checkPasswd();
     document.getElementsByName("password")[0].onchange = checkPasswd;
     document.getElementsByName("retypePassword")[0].onchange = checkPasswd;
+    
+    if (document.getElementsByClassName("dberror")[0].innerHTML != '[TODO_ERROR]') {
+        document.getElementsByClassName("dberror")[0].style.display = 'block';
+    } else {
+        document.getElementsByClassName("dberror")[0].style.display = 'none';
+    }
 </script>

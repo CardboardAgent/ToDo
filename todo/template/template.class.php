@@ -3,9 +3,11 @@
 namespace ToDo\Template;
 
 
-/*
+/**
  * 
- *  */
+ * May needs an update to apply a default value to the placeholders Sidebar and Navigation before I call render
+ * 
+ */
 
 class template {
     public $navigationContent;
@@ -33,6 +35,10 @@ class template {
             $template = str_replace($placeholder, $value, $template);
         }
         $this->renderedTemplate = $template;
+    }
+    
+    public function replace($placeholder, $value) {
+        $this->renderedTemplate = str_replace($placeholder, $value, $this->renderedTemplate);
     }
 }
 

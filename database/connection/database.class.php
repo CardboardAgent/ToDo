@@ -1,4 +1,12 @@
 <?php
+
+/**
+ * check: http://ch1.php.net/manual/en/class.pdo.php
+ * also : http://code.tutsplus.com/tutorials/pdo-vs-mysqli-which-should-you-use--net-24059
+ * Needs an update: ! 
+ */
+
+
 namespace Database\Connection;
 
 class DatabaseConnection {

@@ -1,15 +1,22 @@
 <div id="login">
-    <div id="error"></div>
-    <form action="./index.php?section=login" method="post" id="login">
+    <div id="error">[TODO_ERROR]</div>
+    <form action="./index.php?section=login&do=login" method="post" id="login">
         <div class="contact row">
             <label>Benutzername</label>
-            <input type="text" placeholder="Benutzername" />
+            <input type="text" placeholder="Benutzername" name="username" />
         </div>
         <div class="contact row">
             <label>Passwort</label>
-            <input type="password" placeholder="Passwort" />
-            <input type="submit" value="Anmelden" />
+            <input type="password" placeholder="Passwort" name="passwd" />
+            <input type="submit" value="Anmelden" name="anmelden" />
             <a class="button" href="./index.php?section=register" title="Registrieren">Registrieren</a>
         </div>
     </form>
+    <script type="text/javascript">
+        if (document.getElementById("error").innerHTML != '[TODO_ERROR]') {
+            document.getElementById("error").style.display = 'block';
+        } else {
+            document.getElementById("error").style.display = 'none';
+        }
+    </script>
 </div>
