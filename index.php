@@ -17,7 +17,14 @@ $templateIndex = './todo/templates/index.html';
 $todo = new \ToDo\Needs\Todo();
 $user = new \ToDo\User\User();
 $template = new \ToDo\Template\template($templateIndex);
-$database = new \Database\Connection\DatabaseConnection();
+
+// Try to connect to the database:
+try {
+    $database = new PDO($dbsettings['dsn'], $dbsettings['user'], $dbsettings['passwd']);
+} catch (PDOException $e) {
+    echo 'Connection Faile Trace: ' . $e->getTraceAsString() . 'Errormessage: ' . $e->getMessage();
+    die(print_r($e->errorInfo(), true));
+}
 
 // check if session is given, else set default value so we don't get any warnings:
 if (array_key_exists('section', $_GET)){
@@ -107,7 +114,7 @@ switch ($section){
             if ($user->getArrResult()){
                 setcookie('logedin', 'true', (time()+1800)); // set cookie I use to delete the session once 30 Minutes passed..
                 session_start(); // start the Session
-                $_SESSION['userid'] = $user->getUserId($database); // get the UserId and store it in the Session
+                $_SESSION['userid'] = $user->getUserId(); // get the UserId and store it in the Session
                 var_dump($_SESSION);
                 //header("Location: index.php?section=logedin"); // send to section logedin
             } else {

@@ -5,7 +5,7 @@
 namespace ToDo\User;
 
 class User {
-    protected $id, $username, $firstname, $lastname, $result, $arrResult, $errormsg;
+    protected $id, $username, $firstname, $lastname, $arrResult, $errormsg;
     
     public function __construct() {
     }
@@ -28,8 +28,7 @@ class User {
         $query = 'SELECT `id` 
                   FROM `td_user` 
                   WHERE `username` = "' . $this->username .'";';
-        $this->result = $database->execute($query);
-        $this->arrResult = mysqli_fetch_array($this->result);
+        $this->arrresult = $database->query($query);
         
         $this->id = $this->arrResult['id'];
         
