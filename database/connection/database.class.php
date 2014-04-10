@@ -10,29 +10,54 @@
 namespace Database\Connection;
 
 class DatabaseConnection {
-    protected $databaseHost = "localhost"; //default localhost
-    protected $databaseUser = "root";
+    //default values will be overriden when calling constructor obsolete? yeah probably..
+    protected $databaseHost = "localhost";
+    protected $databaseUser = "root"; 
     protected $databasePassword = "toor";
     protected $databaseName = "todo";
-    public $link;
+    protected $databasePort = null;
+    public $link; // might be obsolete now..
 
     
-    public function __construct() { // $databaseHost, $databaseName, $databaseUser, $databasePassword
-        // connect to server:
-        $link = mysqli_init();
-        $this->link = $link;
-        $connection = mysqli_real_connect($link, $this->databaseHost, $this->databaseUser, $this->databasePassword);
+    public function __construct($dbHost, $dbUser, $dbPasswd, $dbName, $dbPort=null){
+        $this->databaseHost = $dbHost;
+        $this->databaseUser = $dbUser;
+        $this->databasePassword = $dbPasswd;
+        $this->databaseName = $dbName;
+        if (isset($dbPort)) {
+            $this->databasePort = $dbPort;
+        }
+        
+        /**
+         *  connect to server
+         *  Database name left empty to ensure we can connect to the server
+         *  and don't fail because the database doesn't exist 
+         *  I check that later on
+         */
+        $connection = new \mysqli($this->databaseHost, 
+                                  $this->databaseUser, 
+                                  $this->databasePassword, 
+                                  null,
+                                  $this->databasePort);
         // check if connection was successfully
         if ($connection === false) {
-            echo '<p class="db-error">Konnte keine Verbindung zum Datenbankserver herstellen. Bitte Konfiguration &uuml;berpr&uuml;fen. SQL-Fehlermeldung: ' .  mysqli_errno($this->link).': ' .mysqli_error($this->link) .'</p>';
+            echo '<p class="db-error">Konnte keine Verbindung zum 
+                Datenbankserver herstellen. 
+                Bitte Konfiguration &uuml;berpr&uuml;fen.
+                SQL-Fehlermeldung: ' .  $connection->errno  . ': ' 
+                    . $connection->error . '</p>';
         }else {
-            // connect to the database
-            $connected = mysqli_select_db($link, $this->databaseName);// $connected = boolean True on success
+            // connect to the database boolean True on success
+            $connected = $connection::select_db($this->databaseName);
             // check if connected succesfully
             if ($connected === true){
                 return true;
             }else {
-                echo '<p class="select-db-error>Konnte keine Verbindung zur angegebenen Datenbank herstellen. Bitte Konfiguration &uuml;berpr&uuml;fen. SQL-Fehlermeldung: ' .mysqli_errno($this->link).': ' .mysqli_error($this->link) .'</p>';
+                echo '<p class="select-db-error>Konnte keine Verbindung zur
+                    angegebenen Datenbank herstellen. Bitte Konfiguration
+                    &uuml;berpr&uuml;fen. SQL-Fehlermeldung: ' . 
+                        $connection->errno . ': ' . 
+                        $connection->error . '</p>';
                 return false;
             }
         }
@@ -40,12 +65,12 @@ class DatabaseConnection {
    
     public function execute($query){
         // $query = mysqli_real_escape_string($this->link, $query);
-        mysqli_real_query($this->link, $query);
-        return mysqli_store_result($this->link);
+        $connection::real_query($query);
+        return $connection::store_result($this->link);
     }
     
     public function __destruct() {
-        // mysqli_close($this->link);
+        $connection::close();
     }
 }
 
