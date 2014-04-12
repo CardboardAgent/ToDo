@@ -52,13 +52,26 @@ class DatabaseConnection {
             // check if connected succesfully
             if ($connected === true){
                 return true;
-            }else {
+            } else {
                 echo '<p class="select-db-error>Konnte keine Verbindung zur
                     angegebenen Datenbank herstellen. Bitte Konfiguration
                     &uuml;berpr&uuml;fen. SQL-Fehlermeldung: ' . 
                         $connection->errno . ': ' . 
                         $connection->error . '</p>';
                 return false;
+                // maybe ask if database shall be created? Might do this with 
+                // an option in the config file which doesn't exist at this
+                // point...
+                // 
+                // if ($arrConfig['createDB'] === true) {
+                //     $query = "CREATE DATABASE $arrConfig['dbname'];";
+                //     $connection::real_query($query);
+                //     $connection::select_db($arrConfig['dbname']);
+                //     create the tables using the script:
+                //     $query = requier_once ./todo.sql;
+                //     $connection::real_query($query);
+                //     print("Datenbank erfolgreich erstellt!");
+                // }
             }
         }
    }

@@ -28,11 +28,10 @@ class User {
         $query = 'SELECT `id` 
                   FROM `td_user` 
                   WHERE `username` = "' . $this->username .'";';
-        $this->result = $database->execute($query);
-        //$this->arrResult = mysqli_fetch_array($this->result);
-        
+        $result = $database->execute($query);
+        $this->arrResult = $result::fetch_array();
         $this->id = $this->arrResult['id'];
-        
+        $result::free();
         return $this->id;
     }
     
