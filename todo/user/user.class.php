@@ -29,7 +29,7 @@ class User {
                   FROM `td_user` 
                   WHERE `username` = "' . $this->username .'";';
         $this->result = $database->execute($query);
-        $this->arrResult = mysqli_fetch_array($this->result);
+        //$this->arrResult = mysqli_fetch_array($this->result);
         
         $this->id = $this->arrResult['id'];
         
