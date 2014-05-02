@@ -9,7 +9,7 @@
 
 namespace Database\Connection;
 
-class DatabaseConnection {
+class DatabaseConnection extends \mysqli{
     //default values will be overriden when calling constructor obsolete? yeah probably..
     protected $databaseHost = "localhost";
     protected $databaseUser = "root"; 
@@ -48,7 +48,7 @@ class DatabaseConnection {
                     . $connection->error . '</p>';
         }else {
             // connect to the database boolean True on success
-            $connected = $connection::select_db($this->databaseName);
+            $connected = $connection->select_db($this->databaseName);
             // check if connected succesfully
             if ($connected === true){
                 return true;
@@ -56,8 +56,8 @@ class DatabaseConnection {
                 echo '<p class="select-db-error>Konnte keine Verbindung zur
                     angegebenen Datenbank herstellen. Bitte Konfiguration
                     &uuml;berpr&uuml;fen. SQL-Fehlermeldung: ' . 
-                        $connection->errno . ': ' . 
-                        $connection->error . '</p>';
+                        $this->errno . ': ' . 
+                        $this->error . '</p>';
                 return false;
                 // maybe ask if database shall be created? Might do this with 
                 // an option in the config file which doesn't exist at this
@@ -65,11 +65,11 @@ class DatabaseConnection {
                 // 
                 // if ($arrConfig['createDB'] === true) {
                 //     $query = "CREATE DATABASE $arrConfig['dbname'];";
-                //     $connection::real_query($query);
-                //     $connection::select_db($arrConfig['dbname']);
+                //     $connection->real_query($query);
+                //     $connection->select_db($arrConfig['dbname']);
                 //     create the tables using the script:
                 //     $query = requier_once ./todo.sql;
-                //     $connection::real_query($query);
+                //     $connection->real_query($query);
                 //     print("Datenbank erfolgreich erstellt!");
                 // }
             }
@@ -77,13 +77,13 @@ class DatabaseConnection {
    }
    
     public function execute($query){
-        // $query = mysqli_real_escape_string($this->link, $query);
-        $connection::real_query($query);
-        return $connection::store_result($this->link);
+        global $database, $connection;
+        $database->real_query($query);
+        return $database->store_result();
     }
     
     public function __destruct() {
-        $connection::close();
+        //$this::close();
     }
 }
 

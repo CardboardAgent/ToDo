@@ -17,7 +17,7 @@ $templateIndex = './todo/templates/index.html';
 $todo = new \ToDo\Needs\Todo();
 $user = new \ToDo\User\User();
 $template = new \ToDo\Template\template($templateIndex);
-$database = new \Database\Connection\DatabaseConnection();
+$database = new \Database\Connection\DatabaseConnection('localhost', 'root', '$IhNBub17Ja!', 'todo');
 
 // check if session is given, else set default value so we don't get any warnings:
 if (array_key_exists('section', $_GET)){

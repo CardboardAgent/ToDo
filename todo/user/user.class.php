@@ -42,16 +42,16 @@ class User {
     public function createUser() {
         global $database;
         
-        $this->username = $_POST['username'];
-        $this->passwd = $_POST['password'];
-        $this->username = mysqli_escape_string($database->link, $username);
-        $this->passwd = md5(mysqli_escape_string($database->link, $passwd));
+//        $this->username = $_POST['username'];
+//        $this->passwd = $_POST['password'];
+        $this->username = $database->escape_string($_POST['username']);
+        $this->passwd = md5($database->escape_string($_POST['password']));
         
         $query = 'INSERT INTO `td_user`(`username`, `password`) 
                   VALUES(\''.$this->username.'\', \''.$this->passwd.'\');';
         $database->execute($query);
         
-        if (mysqli_errno($database->link) == 1062){
+        if ($database->errno == 1062){
             $errormsg = 'Benutzername bereits in Verwendung, bitte w&auml;hlen Sie einen neuen.';
             $this->errormsg = $errormsg;
         }
