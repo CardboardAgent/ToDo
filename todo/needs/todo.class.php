@@ -12,22 +12,52 @@ class Todo {
     protected $user; // type user-object
     protected $state; // type state-object
     
-    public  function __construct(){
-                
+    public  function __construct($doWhat=NULL){  // $name, $description, $user_id, $state_id
+        switch ($doWhat) {
+            case 'createTodo':
+                self::createToDo();
+                break;
+
+            default:
+                break;
+        }
+        
     }
     
+//    $query = "INSERT INTO `td_todo` (
+//                                            `name`,
+//                                            `description`,
+//                                            `user_id`,
+//                                            `state_id`
+//                                        )
+//                                 VALUES (
+//                                            $name,
+//                                            $description,
+//                                            $user_id,
+//                                            $state_id
+//                                        );";
+
     protected function listToDo($userId) {
+        global $database;
         if (!empty($userId)){
-            $query = "SELECT name, description, category, state 
-                      FROM td_todo 
-                      WHERE user = $userId;";
+            $query = "SELECT `name` AS name, 
+                             `description` AS description, 
+                             `category_id` AS category_id, 
+                             `state_id` AS state_id
+                      FROM `td_todo`
+                      WHERE `user_id` = $userId;";
         }else {
-            $query = "SELECT name, description, category, state, user 
-                      FROM td_todo;";
+            $query = "SELECT `name` AS name, 
+                             `description` AS description, 
+                             `category_id` AS category_id, 
+                             `state_id` AS state_id, 
+                             `user_id` AS user_id
+                      FROM `td_todo`;";
         }
-        $result = DatabaseConnection::execute($query);
         
-        foreach($result as $key => $result){
+        $database->execute($query);
+        
+        foreach($database->data as $key => $result){
                 $todo = array();
                 
                 $todo[$key]['name'] = $result[$key]['name'];
@@ -63,11 +93,12 @@ class Todo {
     }
     
     protected function editToDo($id, $category, $state, $user){
+        global $database;
         $query = "SELECT name, description, category, state, user 
                   FROM td_todo 
                   WHERE id = $id 
                       AND user_id = $user;";
-        $result = DatabaseConnection::execute($query);
+        $database->execute($query);
         
         foreach($result as $key => $value){
             $todo = array();

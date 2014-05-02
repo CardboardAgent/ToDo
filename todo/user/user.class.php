@@ -5,16 +5,16 @@
 namespace ToDo\User;
 
 class User {
-    protected $id, $username, $firstname, $lastname, $result, $arrResult, $errormsg;
+    protected $id, $username, $passwd, $firstname, $lastname, $result, $exists, $errormsg;
     
     public function __construct() {
     }
     
-    public function getArrResult() {
-        if (isset($this->arrResult)){
-            return true;
-        } else {
+    public function getUserExists() {
+        if (!$this->exists){
             return false;
+        } else {
+            return true;
         }
     }
     
@@ -25,13 +25,13 @@ class User {
     public function getUserId() {
         global $database;
         
-        $query = 'SELECT `id` 
+        $query = 'SELECT `id` AS id
                   FROM `td_user` 
                   WHERE `username` = "' . $this->username .'";';
-        $result = $database->execute($query);
-        $this->arrResult = $result::fetch_array();
-        $this->id = $this->arrResult['id'];
-        $result::free();
+        $database->execute($query);
+        $this->id = $database->data[0];
+        var_dump($database->data);
+        $database->freeResult();
         return $this->id;
     }
     
@@ -42,8 +42,8 @@ class User {
     public function createUser() {
         global $database;
         
-//        $this->username = $_POST['username'];
-//        $this->passwd = $_POST['password'];
+        $this->username = $_POST['username'];
+        $this->passwd = $_POST['password'];
         $this->username = $database->escape_string($_POST['username']);
         $this->passwd = md5($database->escape_string($_POST['password']));
         
@@ -63,12 +63,20 @@ class User {
         $this->username = $_POST['username'];
         $this->passwd = md5($_POST['passwd']);
         
-        $query = 'SELECT `username`, `password` 
+        $query = 'SELECT `username` AS username,
+                         `password` AS password
                   FROM `td_user` 
                   WHERE `username` = "' . $this->username . '" 
                       AND password = "' . $this->passwd .'";';
-        $this->result = $database->execute($query);
-        $this->arrResult = mysqli_fetch_array($this->result);
-        // print_r($this->arrResult);
+        
+        $database->execute($query);
+        var_dump($database->data);
+        if (array_key_exists(0, $database->data)){
+            $this->exists = TRUE;
+        } else {
+            $this->exists = FALSE;
+        }
+        var_dump($database->data);
+        $database->freeResult();
     }
 }
