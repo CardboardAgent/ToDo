@@ -16,7 +16,7 @@ class DatabaseConnection extends \mysqli{
     protected $databaseName = "todo";
     protected $databasePort = null;
     protected $result = null;
-    protected $mysqli;
+    public $mysqli;
     public $data; // result of the query against the database
 
     
@@ -80,23 +80,22 @@ class DatabaseConnection extends \mysqli{
    }
    
     public function execute($query){
-        $i = 0;
         $this->data = array();
         // execute query and store the result even if the query isn't a select
-        // query:
+        // query but there won't be any content:
         $this->mysqli->real_query($query);
         $this->result = $this->mysqli->store_result();
-        
-        // fetch the result-object into an array if the fetch_array()-function
-        //  doesn't return NULL:
+        // fetch the result-object into an array if the executed query was a 
+        // query that does return something e.g. SELECT *...:
+        if($this->result === TRUE) {
             foreach($this->result->fetch_array() as $data){
                 $this->data[] = $data;
             }
-            if (empty($this->data)) {
-                return FALSE;
-            } else {
-                return $this->data;
-            }
+            return $this->data;
+        }
+        else {
+            return FALSE;
+        }
     }
     
     public function freeResult() {

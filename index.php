@@ -16,7 +16,6 @@ require_once './todo/template/template.class.php';
 $templateIndex = './todo/templates/index.html';
 
 $database = new \Database\Connection\DatabaseConnection('localhost', 'root', 'toor', 'todo');
-$todo = new \ToDo\Needs\Todo();
 $user = new \ToDo\User\User();
 $template = new \ToDo\Template\template($templateIndex);
 
@@ -32,11 +31,6 @@ if (array_key_exists('do', $_GET)){
     $do = $_GET['do'];
 } else {
     $do = null;
-}
-
-if (!array_key_exists('logedin', $_COOKIE)){
-    // session_unset();
-    // session_destroy();
 }
 
 switch ($section){
@@ -65,12 +59,15 @@ switch ($section){
 
     case 'logedin':
         session_start(); // start the Session
-        $_SESSION['logedin'] = true; // Session does need to expire after maybe
-// 30? I don't know, have a look at: 
-// http://stackoverflow.com/questions/520237/how-do-i-expire-a-php-session-after-30-minutes
+        
+        if(!isset($_SESSION['userid'])){ //
+            header("Location: index.php?section=login");
+        }
+        
+        $_SESSION['logedin'] = true;
+        // http://stackoverflow.com/questions/520237/how-do-i-expire-a-php-session-after-30-minutes
         
         $templateContent = file_get_contents('./todo/templates/backend.html');
-        
         $template->arrPlaceholders = array('[TODOTITLE]' => 'Backend', 
                                            '[NAVIGATION]' => $template->navigationContent, 
                                            '[SIDEBAR]' => $template->sidebarContent, 
@@ -80,28 +77,35 @@ switch ($section){
         break;
     
     case 'logout':
-        // Unset and Distroy here wrong
-        // good Input: do I want to delete the Session?
-        // May be enough to delete the userID
-        // session_unset();
-        // session_destroy();
-        if (array_key_exists('logedin', $_COOKIE)){
-            unset($_COOKIE['logedin']);
-            setcookie('logedin', 'true', 1);
-        }
+        session_start(); // start the Session
+        unset($_SESSION['userid']);
+        unset($_SESSION['logedin']);
         header("Location: index.php?section=login");
         break;
         
     case 'myToDos':
-        // $templateContent = file_get_contents('./todo/templates/myToDos.html');
+        session_start(); // start the Session
         
-        // $template->arrPlaceholders = array()
+        $todo = new \ToDo\Needs\Todo('listMyToDos');
+        $myTodoList = new \ToDo\Template\template('./todo/templates/myToDos.html');
+        $myTodoList->arrPlaceholders = array('[TODO_MYTODOS]' => $todo->getContent());
+        $myTodoList->render();
+        
+        $myTodoDos = $myTodoList->renderedTemplate;
+        $myTodoList = NULL;
+        
+        $template->arrPlaceholders = array('[TODOTITLE]' => 'MyToDos',
+                                           '[NAVIGATION]' => $template->navigationContent,
+                                           '[SIDEBAR]' => $template->sidebarContent,
+                                           '[CONTENT]' => $myTodoDos);
+        $template->render();
+        echo $template->renderedTemplate;
         break;
         
     case 'login':
     default : // login
-        if (array_key_exists('logedin', $_COOKIE)){
-            header("Location: index.php?section=logedin"); // authentication already done, further to logedin
+        if (isset($_SESSION['userid'])){
+            header("Location: index.php?section=logedin"); // authentication already done, redirect to logedin
         }
         // content-template:
         $templateContent = file_get_contents('./todo/templates/login.html');
@@ -116,8 +120,6 @@ switch ($section){
         if ($do == 'login'){
             $user->checkUser();
             if ($user->getUserExists()){
-                var_dump('true');
-                setcookie('logedin', 'true', (time()+1800)); // set cookie I use to delete the session once 30 Minutes passed..
                 session_start(); // start the Session
                 $_SESSION['userid'] = $user->getUserId(); // get the UserId and store it in the Session
                 header("Location: index.php?section=logedin"); // send to section logedin

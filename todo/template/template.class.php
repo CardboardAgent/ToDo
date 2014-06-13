@@ -22,12 +22,6 @@ class template {
         $this->navigationContent = file_get_contents('./todo/templates/navigation.html');
         $this->sidebarContent = file_get_contents('./todo/templates/sidebar.html');
     }
-
-// if render wont work out..:    
-//    public function replace($arrPlaceholders,$arrPlaceholdersValues) {
-//        $template = str_replace($arrPlaceholders, $arrPlaceholdersValues, $templateIndex);
-//        return $template;
-//    }
     
     public function render(){
         $template = file_get_contents($this->templatePath);

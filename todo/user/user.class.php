@@ -30,7 +30,6 @@ class User {
                   WHERE `username` = "' . $this->username .'";';
         $database->execute($query);
         $this->id = $database->data[0];
-        var_dump($database->data);
         $database->freeResult();
         return $this->id;
     }
@@ -44,14 +43,14 @@ class User {
         
         $this->username = $_POST['username'];
         $this->passwd = $_POST['password'];
-        $this->username = $database->escape_string($_POST['username']);
-        $this->passwd = md5($database->escape_string($_POST['password']));
+        $this->username = $database->mysqli->real_escape_string($this->username);
+        $this->passwd = md5($database->mysqli->real_escape_string($this->passwd));
         
         $query = 'INSERT INTO `td_user`(`username`, `password`) 
                   VALUES(\''.$this->username.'\', \''.$this->passwd.'\');';
         $database->execute($query);
         
-        if ($database->errno == 1062){
+        if ($database->mysqli->errno == 1062){
             $errormsg = 'Benutzername bereits in Verwendung, bitte w&auml;hlen Sie einen neuen.';
             $this->errormsg = $errormsg;
         }
@@ -70,13 +69,12 @@ class User {
                       AND password = "' . $this->passwd .'";';
         
         $database->execute($query);
-        var_dump($database->data);
-        if (array_key_exists(0, $database->data)){
+        
+        if (isset($database->data[0])){
             $this->exists = TRUE;
         } else {
             $this->exists = FALSE;
         }
-        var_dump($database->data);
         $database->freeResult();
     }
 }
