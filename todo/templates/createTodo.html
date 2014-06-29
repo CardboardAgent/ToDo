@@ -1,0 +1,21 @@
+<form action="./index.php?section=create&do=save" method="post" id="createTodo">
+    <div class="row">
+        <label for="name">Name</label><input type="text" value="[TODONAME]" name="name" id="name" />
+    </div>
+    <div class="row">
+        <label for="category">Kategorie</label>[TODOCATEGORY]
+    </div>
+    <div class="row">
+        <label for="user">Zugewiesener Benutzer</label>[TODOUSER]
+    </div>
+    <div class="row">
+        <label for="status">Status</label>[TODOSTATE]
+    </div>
+    <div class="row">
+        <label for="content">Inhalt</label><textarea name="content">[TODOCONTENT]</textarea>
+    </div>
+    <div class="row controls">
+        <input type="submit" name="submit" value="Erstellen" />
+        <input type="reset" name="reset" value="Abbrechen" />
+    </div>
+</form>

@@ -1,0 +1,24 @@
+<form action="./index.php?section=editUser&do=save" method="post" id="editUser">
+    <div class="row">
+        <label for="username">Benutzername</label><input type="text" value="[USERNAME]" name="username" id="name" />
+    </div>
+    <div class="row">
+        <label for="password">Passwort</label><input type="password" name="password" />
+    </div>
+    <div class="row">
+        <label for="repasswd">Passwort erneut eingeben</label><input type="password" name="repassword" />
+    </div>
+    <div class="row">
+        <label for="firstname">Vorname</label><input type="text" name="firstname" value="[USERFIRST]" />
+    </div>
+    <div class="row">
+        <label for="lastname">Nachname</label><input type="text" name="lastname"  value="[USERLAST]" />
+    </div>
+    <!--<div class="row">
+        <label for="mail">E-Mail</label><input type="email" name="mail" value="[USERMAIL]" />
+    </div>-->
+    <div class="row controls">
+        <input type="submit" name="submit" value="Erstellen" />
+        <input type="reset" name="reset" value="Abbrechen" />
+    </div>
+</form>
